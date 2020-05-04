@@ -80,8 +80,10 @@ async def on_message(message):
     if message.content.startswith("$hello"):
         await message.channel.send(f"Hello, {message.author.display_name}!")
 
-    if match := DAD_JOKE_PROG.match(message.content):
-        if (name := match["name"]) != "":
+    match = DAD_JOKE_PROG.match(message.content)
+    if match:
+        name = match["name"]
+        if name != "":
             await message.channel.send(f"Hi, {name}. I'm Peachy's Bot.")
 
 
