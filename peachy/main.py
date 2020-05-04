@@ -88,6 +88,7 @@ async def on_message(message):
 
 
 def main():
+    global DISCORD_KEY
     try:
         DISCORD_KEY = sys.argv[1]
     except IndexError:
