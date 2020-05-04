@@ -1,5 +1,7 @@
 import re
 import json
+import os
+import sys
 
 import discord
 
@@ -11,7 +13,11 @@ DAD_JOKE_PROG = re.compile(DAD_JOKE_RE)
 
 AMPD_GUILD_ID = 691335993764216872
 
-DISCORD_KEY = ""
+DISCORD_KEY = None
+
+PACK_PATH = os.path.dirname(os.path.abspath(__file__))
+print(PACK_PATH)
+PEOPLE_PATH = os.path.join(PACK_PATH, "people.json")
 
 
 class Person:
@@ -44,7 +50,7 @@ def load_people(filename):
     return people
 
 
-USER_MAP = load_people("peachy/people.json")
+USER_MAP = load_people(PEOPLE_PATH)
 print(USER_MAP)
 
 
@@ -79,4 +85,10 @@ async def on_message(message):
             await message.channel.send(f"Hi, {name}. I'm Peachy's Bot.")
 
 
-client.run(DISCORD_KEY)
+if __name__ == "__main__":
+    try:
+        DISCORD_KEY = sys.argv[1]
+    except IndexError:
+        print("please supply the file containing the discord key")
+
+    client.run(DISCORD_KEY)
