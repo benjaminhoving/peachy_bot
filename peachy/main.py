@@ -87,10 +87,13 @@ async def on_message(message):
             await message.channel.send(f"Hi, {name}. I'm Peachy's Bot.")
 
 
-if __name__ == "__main__":
+def main():
     try:
         DISCORD_KEY = sys.argv[1]
     except IndexError:
         print("please supply the file containing the discord key")
 
     client.run(DISCORD_KEY)
+
+if __name__ == "__main__":
+    main()
