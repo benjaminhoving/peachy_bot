@@ -12,7 +12,7 @@ setup(
 
     entry_points={
         "console_scripts": [
-            "peachy = peachy.main",
+            "peachy = peachy.main:main",
         ],
     },
 
