@@ -1,9 +1,12 @@
 import re
-import json
-import os
 import sys
 
 import discord
+from sqlalchemy.orm.exc import NoResultFound
+
+from peachy.db.base import scoped_session
+from peachy.db.models import User
+
 
 client = discord.Client()
 
@@ -14,44 +17,6 @@ DAD_JOKE_PROG = re.compile(DAD_JOKE_RE)
 AMPD_GUILD_ID = 691335993764216872
 
 DISCORD_KEY = None
-
-PACK_PATH = os.path.dirname(os.path.abspath(__file__))
-print(PACK_PATH)
-PEOPLE_PATH = os.path.join(PACK_PATH, "people.json")
-
-
-class Person:
-    def __init__(self, firstname, lastname):
-        self.firstname = firstname
-        self.lastname = lastname
-
-    def __repr__(self):
-        return f"{self.fullname}"
-
-
-    @property
-    def fullname(self):
-        return f"{self.firstname} {self.lastname}"
-
-
-def load_people(filename):
-    people = {}
-
-    with open(filename, 'r') as infile:
-        raw_data = json.load(infile)
-
-        for raw_key, raw_person in raw_data.items():
-            key = int(raw_key)
-            first_name = raw_person['first_name']
-            last_name = raw_person['last_name']
-
-            people[key] = Person(first_name, last_name)
-
-    return people
-
-
-USER_MAP = load_people(PEOPLE_PATH)
-print(USER_MAP)
 
 
 @client.event
@@ -65,17 +30,15 @@ async def on_message(message):
         return
 
     if message.content.startswith("$who"):
-        members = message.mentions
-        for member in members:
-            try:
-                person = USER_MAP[member.id]
-            except KeyError:
-                await message.channel.send(
-                    f"no real name found for {member.display_name}. go harass peachy pie about it"
-                )
-                return
+        for member in message.mentions:
+            with scoped_session() as session:
+                try:
+                    user = session.query(User).filter(User.discord_id == member.id).one()
+                except NoResultFound:
+                    message.channel.send(f"No real name found for {member.display_name}.")
+                response_message = f"{member.display_name} is {user.full_name}"
 
-            await message.channel.send(f"{member.display_name} is {person.fullname}")
+            await message.channel.send(response_message)
 
     if message.content.startswith("$hello"):
         await message.channel.send(f"Hello, {message.author.display_name}!")
@@ -95,6 +58,7 @@ def main():
         print("please supply the file containing the discord key")
 
     client.run(DISCORD_KEY)
+
 
 if __name__ == "__main__":
     main()

@@ -8,11 +8,12 @@ setup(
 
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
-    install_requires=["discord.py"],
+    install_requires=["discord.py", "sqlalchemy"],
 
     entry_points={
         "console_scripts": [
             "peachy = peachy.main:main",
+            "peachy_import_users = scripts.import_users:import_users"
         ],
     },
 
