@@ -4,8 +4,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from peachy.settings import get_setting
 
-engine = create_engine("sqlite:///peachy.db")
+
+engine = create_engine(get_setting("db_connection_string"))
 Base = declarative_base(bind=engine)
 Session = sessionmaker(bind=engine)
 
