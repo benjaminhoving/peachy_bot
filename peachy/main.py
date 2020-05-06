@@ -72,4 +72,9 @@ if __name__ == "__main__":
         print("please provide the path to a configuration json file")
         sys.exit()
     settings = load_settings(settings_filename)
-    main(settings)
+    while True:
+        try:
+            main(settings)
+        except Exception as e:
+            with open('peachy_log.log', 'a') as outfile:
+                print('something went wrong', e, file=outfile)
