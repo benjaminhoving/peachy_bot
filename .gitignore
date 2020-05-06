@@ -142,3 +142,4 @@ cython_debug/
 DK.txt
 peachy/members.txt
 peachy.db
+settings.json

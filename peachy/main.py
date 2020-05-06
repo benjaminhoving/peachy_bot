@@ -1,4 +1,5 @@
 import re
+import json
 import sys
 
 import discord
@@ -15,8 +16,6 @@ DAD_JOKE_RE = r"[Ii]\'?[mM]\s(?P<name>[^\.]*)\.?"
 DAD_JOKE_PROG = re.compile(DAD_JOKE_RE)
 
 AMPD_GUILD_ID = 691335993764216872
-
-DISCORD_KEY = None
 
 
 @client.event
@@ -50,15 +49,27 @@ async def on_message(message):
             await message.channel.send(f"Hi, {name}. I'm Peachy's Bot.")
 
 
-def main():
-    global DISCORD_KEY
-    try:
-        DISCORD_KEY = sys.argv[1]
-    except IndexError:
-        print("please supply the file containing the discord key")
+def load_settings(settings_filename):
+    with open(settings_filename, 'r') as infile:
+        settings = json.load(infile)
+    return settings
 
-    client.run(DISCORD_KEY)
+
+def main(settings):
+    try:
+        discord_key = settings["discord_key"]
+    except KeyError:
+        print("configuration file does not contain 'discord_key'")
+        sys.exit()
+
+    client.run(discord_key)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        settings_filename = sys.argv[1]
+    except IndexError:
+        print("please provide the path to a configuration json file")
+        sys.exit()
+    settings = load_settings(settings_filename)
+    main(settings)
