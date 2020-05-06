@@ -12,7 +12,7 @@ setup(
 
     entry_points={
         "console_scripts": [
-            "peachy = peachy.main:main",
+            "peachy = peachy.main:bootstrap",
             "peachy_import_users = scripts.import_users:import_users"
         ],
     },

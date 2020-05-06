@@ -65,7 +65,7 @@ def main(settings):
     client.run(discord_key)
 
 
-if __name__ == "__main__":
+def bootstrap():
     try:
         settings_filename = sys.argv[1]
     except IndexError:
@@ -78,3 +78,7 @@ if __name__ == "__main__":
         except Exception as e:
             with open('peachy_log.log', 'a') as outfile:
                 print('something went wrong', e, file=outfile)
+
+
+if __name__ == "__main__":
+    bootstrap()
